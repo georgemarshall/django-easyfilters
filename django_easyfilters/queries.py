@@ -46,6 +46,7 @@ class DateAggregateCompiler(SQLCompiler):
 
 class DateWithAlias(Date):
     alias = 'easyfilter_date_alias'
+
     def as_sql(self, qn, connection):
         return super(DateWithAlias, self).as_sql(qn, connection) + ' as ' + self.alias
 
@@ -109,6 +110,7 @@ class NumericAggregateCompiler(SQLCompiler):
 
 class NumericValueRange(object):
     alias = 'easyfilter_number_range_alias'
+
     def __init__(self, col, ranges):
         # ranges is list of (lower, upper) bounds we want to find, where 'lower'
         # is inclusive and upper is exclusive.
@@ -153,4 +155,3 @@ def numeric_range_counts(qs, fieldname, ranges):
             r = ranges[-1]
         count_dict[r] = count
     return count_dict
-

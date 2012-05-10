@@ -7,6 +7,7 @@ BINDING_CHOICES = [
     ('C', 'Cloth'),
 ]
 
+
 class Author(models.Model):
     name = models.CharField(max_length=50)
     likes = models.IntegerField(default=0)
@@ -17,6 +18,7 @@ class Author(models.Model):
     class Meta:
         ordering = ['name']
 
+
 class Genre(models.Model):
     name = models.CharField(max_length=50)
 
@@ -25,6 +27,7 @@ class Genre(models.Model):
 
     class Meta:
         ordering = ['name']
+
 
 class Book(models.Model):
     name = models.CharField(max_length=100)
@@ -43,4 +46,3 @@ class Book(models.Model):
 class Person(models.Model):
     date_of_birth = models.DateField()
     name = models.CharField(max_length=50)
-

@@ -9,8 +9,10 @@ import math
 def round_dec(d):
     return d._rescale(0, ROUND_HALF_EVEN)
 
+
 def round_dec_down(d):
     return d._rescale(0, ROUND_DOWN)
+
 
 def round_dec_up(d):
     return d._rescale(0, ROUND_UP)
@@ -28,7 +30,7 @@ def auto_ranges(lower, upper, max_items):
     lower_d = Decimal(lower)
     upper_d = Decimal(upper)
 
-    step = (upper_d - lower_d)/max_items
+    step = (upper_d - lower_d) / max_items
 
     # For human presentable numbers, 'step' will preferable be something like 2,
     # 5, 10, or 0.1, 0.2, 0.5. etc.

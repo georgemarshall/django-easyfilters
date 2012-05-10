@@ -1,7 +1,8 @@
 # admin registration to make it easy to add more data for the test suite.
 
-from models import *
+from models import Author, Book, Genre
 from django.contrib import admin
+
 
 class BookAdmin(admin.ModelAdmin):
     def authors(obj):

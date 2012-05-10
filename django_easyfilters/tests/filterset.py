@@ -237,10 +237,10 @@ class TestFilters(TestCase):
     def test_foreignkey_invalid_query(self):
         self.do_invalid_query_param_test(lambda params:
                                              ForeignKeyFilter('genre', Book, params),
-                                         MultiValueDict({'genre':['xxx']}))
+                                         MultiValueDict({'genre': ['xxx']}))
         self.do_missing_related_object_test(lambda params:
                                                 ForeignKeyFilter('genre', Book, params),
-                                            MultiValueDict({'genre':['1000']}))
+                                            MultiValueDict({'genre': ['1000']}))
 
     def test_values_filter(self):
         """
@@ -266,7 +266,6 @@ class TestFilters(TestCase):
             choices_filtered = filter2.get_choices(qs)
             self.assertEqual(1, len(choices_filtered))
             self.assertEqual(choices_filtered[0].link_type, FILTER_REMOVE)
-
 
         # Check list is full, and in right order
         self.assertEqual([unicode(v) for v in Book.objects.values_list('edition', flat=True).order_by('edition').distinct()],
@@ -364,7 +363,7 @@ class TestFilters(TestCase):
 
         # If we select 'emily' as an author:
 
-        data =  MultiValueDict({'authors':[str(emily.pk)]})
+        data = MultiValueDict({'authors': [str(emily.pk)]})
         with self.assertNumQueries(1):
             # 1 query for all chosen objects
             filter1 = ManyToManyFilter('authors', Book, data)
@@ -422,10 +421,10 @@ class TestFilters(TestCase):
     def test_manytomany_filter_invalid_query(self):
         self.do_invalid_query_param_test(lambda params:
                                              ManyToManyFilter('authors', Book, params),
-                                         MultiValueDict({'authors':['xxx']}))
+                                         MultiValueDict({'authors': ['xxx']}))
         self.do_missing_related_object_test(lambda params:
                                                 ManyToManyFilter('authors', Book, params),
-                                            MultiValueDict({'authors':['10000']}))
+                                            MultiValueDict({'authors': ['10000']}))
 
     def test_datetime_filter_multiple_year_choices(self):
         """
@@ -442,7 +441,7 @@ class TestFilters(TestCase):
         self.assertTrue('-' in choices[0].label)
 
     def test_datetime_filter_single_year_selected(self):
-        params = MultiValueDict({'date_published':['1818']})
+        params = MultiValueDict({'date_published': ['1818']})
         f = DateTimeFilter('date_published', Book, params, max_links=10)
         qs = Book.objects.all()
 
@@ -460,7 +459,7 @@ class TestFilters(TestCase):
         self.assertEqual(len([c for c in choices if c.link_type == FILTER_REMOVE]), 1)
 
     def test_datetime_filter_year_range_selected(self):
-        params = MultiValueDict({'date_published':['1813..1814']})
+        params = MultiValueDict({'date_published': ['1813..1814']})
         f = DateTimeFilter('date_published', Book, params, max_links=10)
         qs = Book.objects.all()
 
@@ -485,7 +484,7 @@ class TestFilters(TestCase):
                          ['1813', '1814'])
 
     def test_datetime_filter_single_month_selected(self):
-        params = MultiValueDict({'date_published':['1847-10']})
+        params = MultiValueDict({'date_published': ['1847-10']})
         f = DateTimeFilter('date_published', Book, params, max_links=10)
         qs = Book.objects.all()
 
@@ -505,7 +504,7 @@ class TestFilters(TestCase):
         self.assertEqual(len([c for c in choices if c.link_type == FILTER_REMOVE]), 1)
 
     def test_datetime_filter_month_range_selected(self):
-        params = MultiValueDict({'date_published':['1818-08..1818-09']})
+        params = MultiValueDict({'date_published': ['1818-08..1818-09']})
         f = DateTimeFilter('date_published', Book, params, max_links=10)
         qs = Book.objects.all()
 
@@ -530,7 +529,7 @@ class TestFilters(TestCase):
                          ['August', 'September'])
 
     def test_datetime_filter_single_day_selected(self):
-        params = MultiValueDict({'date_published':['1847-10-16']})
+        params = MultiValueDict({'date_published': ['1847-10-16']})
         f = DateTimeFilter('date_published', Book, params, max_links=10)
         qs = Book.objects.all()
 
@@ -551,7 +550,7 @@ class TestFilters(TestCase):
         self.assertEqual(len([c for c in choices if c.link_type == FILTER_REMOVE]), 1)
 
     def test_datetime_filter_day_range_selected(self):
-        params = MultiValueDict({'date_published':['1847-10-10..1847-10-23']})
+        params = MultiValueDict({'date_published': ['1847-10-10..1847-10-23']})
         f = DateTimeFilter('date_published', Book, params, max_links=10)
         qs = Book.objects.all()
 
@@ -611,7 +610,7 @@ class TestFilters(TestCase):
 
     def test_datetime_filter_max_depth(self):
         qs = Book.objects.all()
-        params = MultiValueDict({'date_published':['1813']})
+        params = MultiValueDict({'date_published': ['1813']})
         f = DateTimeFilter('date_published', Book, params, max_depth='year')
         choices = f.get_choices(f.apply_filter(qs))
         self.assertEqual(len(choices), 1)
@@ -619,7 +618,7 @@ class TestFilters(TestCase):
 
     def test_datetime_filter_invalid_query(self):
         self.do_invalid_query_param_test(lambda params: DateTimeFilter('date_published', Book, params, max_links=10),
-                                         MultiValueDict({'date_published':['1818xx']}))
+                                         MultiValueDict({'date_published': ['1818xx']}))
 
     def test_datetime_filter_empty_qs(self):
         """
@@ -699,7 +698,6 @@ class TestFilters(TestCase):
                               '1818-08-24..1818-08-30',
                               ])
 
-
     def test_datetime_filter_drill_down_to_choice(self):
         """
         Tests that if there is a choice that can be displayed, it will drill
@@ -710,7 +708,7 @@ class TestFilters(TestCase):
         Person.objects.create(name="Peter", date_of_birth=date(2011, 1, 20))
 
         # Chosen year = 2011
-        params = MultiValueDict({'date_of_birth':['2011']})
+        params = MultiValueDict({'date_of_birth': ['2011']})
 
         f = DateTimeFilter('date_of_birth', Person, params)
         qs = Person.objects.all()
@@ -734,7 +732,7 @@ class TestFilters(TestCase):
         Person.objects.create(name="Peter", date_of_birth=date(2011, 1, 20))
 
         # Chosen year = 2011, and date = 2011-01-10
-        params = MultiValueDict({'date_of_birth':['2011', '2011-01-10']})
+        params = MultiValueDict({'date_of_birth': ['2011', '2011-01-10']})
 
         f = DateTimeFilter('date_of_birth', Person, params)
         qs = Person.objects.all()
@@ -757,7 +755,7 @@ class TestFilters(TestCase):
         Person.objects.create(name="Peter", date_of_birth=date(2011, 1, 20))
 
         # Chosen year = 2010 - 2011
-        params = MultiValueDict({'date_of_birth':['2010..2011']})
+        params = MultiValueDict({'date_of_birth': ['2010..2011']})
 
         f = DateTimeFilter('date_of_birth', Person, params)
         qs = Person.objects.all()
@@ -779,7 +777,7 @@ class TestFilters(TestCase):
         for i in range(1, 30):
             Person.objects.create(name="Joe", date_of_birth=date(2011, 9, i))
 
-        params = MultiValueDict({'date_of_birth':['2011-09']})
+        params = MultiValueDict({'date_of_birth': ['2011-09']})
 
         f = DateTimeFilter('date_of_birth', Person, params)
         qs = Person.objects.all()
@@ -791,7 +789,7 @@ class TestFilters(TestCase):
         for i in range(2, 31):
             Person.objects.create(name="Joe", date_of_birth=date(2011, 10, i))
 
-        params = MultiValueDict({'date_of_birth':['2011-10']})
+        params = MultiValueDict({'date_of_birth': ['2011-10']})
 
         f = DateTimeFilter('date_of_birth', Person, params)
         qs = Person.objects.all()
