@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 import math
@@ -785,7 +786,10 @@ def make_numeric_range_choice(to_python, to_str):
             self.values = values
 
         def display(self):
-            return '-'.join([str(v.value) for v in self.values])
+            def values_format(v):
+                return u'∞' if v is None else to_str(v.value)
+
+            return '-'.join(map(values_format, self.values))
 
         @classmethod
         def from_param(cls, param):
@@ -800,7 +804,7 @@ def make_numeric_range_choice(to_python, to_str):
                     val = to_python(p)
                     vals.append(RangeEnd(val, inclusive))
                 except ValidationError:
-                    raise ValueError()
+                    vals.append(None)
             return cls(vals)
 
         def make_lookup(self, field_name):
@@ -808,12 +812,18 @@ def make_numeric_range_choice(to_python, to_str):
                 return {field_name: self.values[0].value}
             else:
                 start, end = self.values[0], self.values[1]
-                return {field_name + '__gt' + ('e' if start.inclusive else ''): start.value,
-                        field_name + '__lt' + ('e' if end.inclusive else ''): end.value}
+                range_filter = {}
+                if start is not None:
+                    range_filter[field_name + '__gt' + ('e' if start.inclusive else '')] = start.value
+                if end is not None:
+                    range_filter[field_name + '__lt' + ('e' if end.inclusive else '')] = end.value
+                return range_filter
 
         def __unicode__(self):
-            return '..'.join([to_str(v.value) + ('i' if v.inclusive else '')
-                              for v in self.values])
+            def values_format(v):
+                return '' if v is None else to_str(v.value) + ('i' if v.inclusive else '')
+
+            return '..'.join(map(values_format, self.values))
 
         def __repr__(self):
             return '<NumericChoice %s>' % self.__unicode__()
@@ -830,8 +840,9 @@ def make_numeric_range_choice(to_python, to_str):
                     return 0
                 else:
                     # Larger difference means less specific
-                    return -cmp(self.values[1].value - self.values[0].value,
-                                other.values[1].value - other.values[0].value)
+                    this = map(lambda v: 0 if v is None else v.value, self.values)
+                    that = map(lambda v: 0 if v is None else v.value, other.values)
+                    return -cmp(this[1] - this[0], that[1] - that[0])
 
     return NumericRangeChoice
 
