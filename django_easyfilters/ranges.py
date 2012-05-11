@@ -27,8 +27,8 @@ def auto_ranges(lower, upper, max_items):
     input_type = type(lower)
 
     # Convert to decimals.
-    lower_d = Decimal(lower)
-    upper_d = Decimal(upper)
+    lower_d = Decimal(str(lower))
+    upper_d = Decimal(str(upper))
 
     step = (upper_d - lower_d) / max_items
 
